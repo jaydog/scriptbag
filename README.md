@@ -1,2 +1,2 @@
-# scriptbag
-bag of useful scripts
+# script bag
+A bag of useful scripts
