@@ -1,0 +1,20 @@
+export PS1='$(
+    OK="\[\033[0;32m\]" ; WARN="\[\033[0;33m\]" ; CRIT="\[\033[0;31m\]"
+    WHITE="\[\033[1;36m\]" ; GRAY="\[\033[m\]" ; GREEN="\[\033[1;32m\]"
+    MAGENTA="\[\033[1;35m\]" ; PEACH="\[\033[1;31m\]"
+    REPO=$(git rev-parse --show-toplevel 2>/dev/null | awk -F/ "{printf \$NF}")
+    MSG="${GRAY}|${MAGENTA}\t${GRAY}|${PEACH}\u${GRAY}@${WHITE}\h${GRAY}:${GREEN}[\W]"
+    if [ "$REPO" ] ; then
+        BRANCH=$(git branch 2>/dev/null | awk "/^\*/{printf \$2}")
+        if [ "$(git status 2>/dev/null | awk "/^Untracked files:/")" ] ; then
+            MSG="${MSG}${GRAY}|${OK}(${REPO}::${CRIT}${BRANCH} !${OK})${GRAY}"
+        elif [ "$(git status 2>/dev/null | awk "/^Changes not staged for commit:/")" ] ; then
+            MSG="${MSG}${GRAY}|${OK}(${REPO}::${WARN}${BRANCH} @${OK})${GRAY}"
+        elif [ "$(git status 2>/dev/null | awk "/^Changes to be committed:/")" ] ; then
+            MSG="${MSG}${GRAY}|${OK}(${REPO}::${WARN}${BRANCH} *${OK})${GRAY}"
+        else
+            MSG="${MSG}${GRAY}|${OK}(${REPO}::${BRANCH})${GRAY}"
+        fi
+    fi
+    echo "${MSG}⚡ ${GRAY} "
+)'
